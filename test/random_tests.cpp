@@ -515,7 +515,6 @@ void run_tests(snprintf_func_t func, bool extra) {
     func(buf, sizeof(buf), "%0+-10..5d", 10); // 2x dot is invalid
     __ASSERT(!strcmp(buf, ".5d"));
 
-
     for(int i = 1; i < 40; i++) {
         char str[40];
         strcpy(str, "test string test string test string");
@@ -549,4 +548,205 @@ void run_tests(snprintf_func_t func, bool extra) {
     __ASSERT(func(buf, sizeof(buf), "%p", 0xffffff) == 8);
     __ASSERT(!strcmp(buf, "00FFFFFF"));
 
+    __FILL(buf, sizeof(buf));
+    __ASSERT(func(buf, sizeof(buf), "%.d", 0) == 0);
+    __ASSERT(!strcmp(buf, ""));
+
+    __FILL(buf, sizeof(buf));
+    __ASSERT(func(buf, sizeof(buf), "%5.d", 0) == 5);
+    __ASSERT(!strcmp(buf, "     "));
+
+    __FILL(buf, sizeof(buf));
+    __ASSERT(func(buf, sizeof(buf), "%+.5d", 100) == 6);
+    __ASSERT(!strcmp(buf, "+00100"));
+
+    __FILL(buf, sizeof(buf));
+    __ASSERT(func(buf, sizeof(buf), "%+.1d", 100) == 4);
+    __ASSERT(!strcmp(buf, "+100"));
+
+    __FILL(buf, sizeof(buf));
+    __ASSERT(func(buf, sizeof(buf), "%+.0d", 1) == 2);
+    __ASSERT(!strcmp(buf, "+1"));
+
+    __FILL(buf, sizeof(buf));
+    __ASSERT(func(buf, sizeof(buf), "%+.d", 1) == 2);
+    __ASSERT(!strcmp(buf, "+1"));
+
+    __FILL(buf, sizeof(buf));
+    __ASSERT(func(buf, sizeof(buf), "%+.0d", 0) == 1);
+    __ASSERT(!strcmp(buf, "+"));
+
+    __FILL(buf, sizeof(buf));
+    __ASSERT(func(buf, sizeof(buf), "%+.d", 0) == 1);
+    __ASSERT(!strcmp(buf, "+"));
+
+    __FILL(buf, sizeof(buf));
+    __ASSERT(func(buf, sizeof(buf), "%.1d", 100) == 3);
+    __ASSERT(!strcmp(buf, "100"));
+
+    __FILL(buf, sizeof(buf));
+    __ASSERT(func(buf, sizeof(buf), "%.0d", 1) == 1);
+    __ASSERT(!strcmp(buf, "1"));
+
+    __FILL(buf, sizeof(buf));
+    __ASSERT(func(buf, sizeof(buf), "%.d", 1) == 1);
+    __ASSERT(!strcmp(buf, "1"));
+
+    __FILL(buf, sizeof(buf));
+    __ASSERT(func(buf, sizeof(buf), "%.0d", 100) == 3);
+    __ASSERT(!strcmp(buf, "100"));
+
+    __FILL(buf, sizeof(buf));
+    __ASSERT(func(buf, sizeof(buf), "%.d", 100) == 3);
+    __ASSERT(!strcmp(buf, "100"));
+
+    __FILL(buf, sizeof(buf));
+    __ASSERT(func(buf, sizeof(buf), "%20.5f", 1.12345678901234) == 20);
+    __ASSERT(!strcmp(buf, "             1.12346"));
+
+    __FILL(buf, sizeof(buf));
+    __ASSERT(func(buf, sizeof(buf), "%20.5f", -1.12345678901234) == 20);
+    __ASSERT(!strcmp(buf, "            -1.12346"));
+
+    __FILL(buf, sizeof(buf));
+    __ASSERT(func(buf, sizeof(buf), "%-20.5f", -1.12345678901234) == 20);
+    __ASSERT(!strcmp(buf, "-1.12346            "));
+
+    __FILL(buf, sizeof(buf));
+    __ASSERT(func(buf, sizeof(buf), "%06.2f", -12.12345678901234) == 6);
+    __ASSERT(!strcmp(buf, "-12.12"));
+
+    __FILL(buf, sizeof(buf));
+    __ASSERT(func(buf, sizeof(buf), "%07.2f", -12.12345678901234) == 7);
+    __ASSERT(!strcmp(buf, "-012.12"));
+
+    __FILL(buf, sizeof(buf));
+    __ASSERT(func(buf, sizeof(buf), "%08.2f", -12.12345678901234) == 8);
+    __ASSERT(!strcmp(buf, "-0012.12"));
+
+    __FILL(buf, sizeof(buf));
+    __ASSERT(func(buf, sizeof(buf), "%+08.2f", 12.12345678901234) == 8);
+    __ASSERT(!strcmp(buf, "+0012.12"));
+
+    __FILL(buf, sizeof(buf));
+    __ASSERT(func(buf, sizeof(buf), "%-+08.2f", 12.12345678901234) == 8);
+    __ASSERT(!strcmp(buf, "+12.12  "));
+
+    __FILL(buf, sizeof(buf));
+    __ASSERT(func(buf, sizeof(buf), "%-+08.2f", -12.12345678901234) == 8);
+    __ASSERT(!strcmp(buf, "-12.12  "));
+
+    __FILL(buf, sizeof(buf));
+    __ASSERT(func(buf, sizeof(buf), "%.9f", 1.12345678901234) == 11);
+    __ASSERT(!strcmp(buf, "1.123456789"));
+
+    __FILL(buf, sizeof(buf));
+    __ASSERT(func(buf, sizeof(buf), "%.11f", 1.12345678901234) == 13);
+    __ASSERT(!strcmp(buf, "1.12345678901"));
+
+    __FILL(buf, sizeof(buf));
+    __ASSERT(func(buf, sizeof(buf), "%05.2f", 100.77213) == 6);
+    __ASSERT(!strcmp(buf, "100.77"));
+
+    __FILL(buf, sizeof(buf));
+    __ASSERT(func(buf, sizeof(buf), "%5.2f", 100.77213) == 6);
+    __ASSERT(!strcmp(buf, "100.77"));
+
+    __FILL(buf, sizeof(buf));
+    __ASSERT(func(buf, sizeof(buf), "%-5.2f", 100.77213) == 6);
+    __ASSERT(!strcmp(buf, "100.77"));
+
+    __FILL(buf, sizeof(buf));
+    __ASSERT(func(buf, sizeof(buf), "%.f", 100.77213) == 3);
+    __ASSERT(!strcmp(buf, "101"));
+
+    __FILL(buf, sizeof(buf));
+    __ASSERT(func(buf, sizeof(buf), "%05.f", 100.77213) == 5);
+    __ASSERT(!strcmp(buf, "00101"));
+
+    __FILL(buf, sizeof(buf));
+    __ASSERT(func(buf, sizeof(buf), "%-05.f", 100.77213) == 5);
+    __ASSERT(!strcmp(buf, "101  "));
+
+    __FILL(buf, sizeof(buf));
+    __ASSERT(func(buf, sizeof(buf), "%+05.f", 100.77213) == 5);
+    __ASSERT(!strcmp(buf, "+0101"));
+
+    __FILL(buf, sizeof(buf));
+    __ASSERT(func(buf, sizeof(buf), "%-+05.f", 100.77213) == 5);
+    __ASSERT(!strcmp(buf, "+101 "));
+
+    __FILL(buf, sizeof(buf));
+    __ASSERT(func(buf, sizeof(buf), "%- 05.f", 100.77213) == 5);
+    __ASSERT(!strcmp(buf, " 101 "));
+
+    __FILL(buf, sizeof(buf));
+    __ASSERT(func(buf, sizeof(buf), "%f", 123456789012345689.0) == 25);
+    __ASSERT(!strcmp(buf, "123456789012345696.000000"));
+
+    __FILL(buf, sizeof(buf));
+    __ASSERT(func(buf, sizeof(buf), "%f", 123456789012345.6789) == 22);
+    __ASSERT(!strcmp(buf, "123456789012345.671875"));
+
+    __FILL(buf, sizeof(buf));
+    __ASSERT(func(buf, sizeof(buf), "%.10f", 123456789012345.6789) == 26);
+    __ASSERT(!strcmp(buf, "123456789012345.6718750000"));
+
+    __FILL(buf, sizeof(buf));
+    __ASSERT(func(buf, sizeof(buf), "%.10f", 123456789012.3456789) == 23);
+    __ASSERT(!strcmp(buf, "123456789012.3456726074"));
+
+    __FILL(buf, sizeof(buf));
+    __ASSERT(func(buf, sizeof(buf), "%f", -123456789012345.6789) == 23);
+    __ASSERT(!strcmp(buf, "-123456789012345.671875"));
+
+    __FILL(buf, sizeof(buf));
+    __ASSERT(func(buf, sizeof(buf), "%Lf", 123456789012345689.0) == 25);
+    __ASSERT(!strcmp(buf, "123456789012345696.000000"));
+
+    __FILL(buf, sizeof(buf));
+    __ASSERT(func(buf, sizeof(buf), "%#x", 100) == 4);
+    __ASSERT(!strcmp(buf, "0x64"));
+
+    __FILL(buf, sizeof(buf));
+    __ASSERT(func(buf, sizeof(buf), "%#x", 0) == 1);
+    __ASSERT(!strcmp(buf, "0"));
+
+    __FILL(buf, sizeof(buf));
+    __ASSERT(func(buf, sizeof(buf), "%x", 0x1a34) == 4);
+    __ASSERT(!strcmp(buf, "1a34"));
+
+    __FILL(buf, sizeof(buf));
+    __ASSERT(func(buf, sizeof(buf), "%X", 0x1a34) == 4);
+    __ASSERT(!strcmp(buf, "1A34"));
+
+    __FILL(buf, sizeof(buf));
+    __ASSERT(func(buf, sizeof(buf), "%o", 0775) == 3);
+    __ASSERT(!strcmp(buf, "775"));
+
+    __FILL(buf, sizeof(buf));
+    __ASSERT(func(buf, sizeof(buf), "%#o", 0775) == 4);
+    __ASSERT(!strcmp(buf, "0775"));
+
+    __FILL(buf, sizeof(buf));
+    __ASSERT(func(buf, sizeof(buf), "%#o", 0) == 1);
+    __ASSERT(!strcmp(buf, "0"));
+
+    double zero = 0.0;
+
+    __FILL(buf, sizeof(buf));
+    __ASSERT(func(buf, sizeof(buf), "%f", 1.0 / zero) == 3);
+    __ASSERT(!strcmp(buf, "inf"));
+
+    __FILL(buf, sizeof(buf));
+    __ASSERT(func(buf, sizeof(buf), "%f", 1.0 / -zero) == 4);
+    __ASSERT(!strcmp(buf, "-inf"));
+
+    __FILL(buf, sizeof(buf));
+    __ASSERT(func(buf, sizeof(buf), "%.2f", 1.0 / zero) == 3);
+    __ASSERT(!strcmp(buf, "inf"));
+
+    __FILL(buf, sizeof(buf));
+    __ASSERT(func(buf, sizeof(buf), "%.2f", 1.0 / -zero) == 4);
+    __ASSERT(!strcmp(buf, "-inf"));
 }
